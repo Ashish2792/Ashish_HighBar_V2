@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.idea/
+.vscode/
+*.DS_Store
+
+# Optional: keep raw outputs ignored, but NOT reports/logs
+outputs/
+
+# Allow logs/ and reports/ to be committed as evidence
+# logs/
+# reports/

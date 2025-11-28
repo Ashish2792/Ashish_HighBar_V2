@@ -1,0 +1,1321 @@
+{
+  "creatives": [
+    {
+      "campaign_name": "Men Premium Modal",
+      "chs_current": 49.62472319507372,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "MenPr-C001",
+          "headline": "Men comfort you can feel all day",
+          "message": "Experience men underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenPr-C002",
+          "headline": "Briefs comfort you can feel all day",
+          "message": "Experience briefs underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenPr-C003",
+          "headline": "Inner comfort you can feel all day",
+          "message": "Experience inner underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenPr-C004",
+          "headline": "Men sale ends soon",
+          "message": "Stock up on your go-to men essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenPr-C005",
+          "headline": "Briefs sale ends soon",
+          "message": "Stock up on your go-to briefs essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenPr-C006",
+          "headline": "Inner sale ends soon",
+          "message": "Stock up on your go-to inner essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenPr-C007",
+          "headline": "Men essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our men underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.0761904761904762
+        },
+        {
+          "id": "MenPr-C008",
+          "headline": "Briefs essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our briefs underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.0761904761904762
+        },
+        {
+          "id": "MenPr-C009",
+          "headline": "Inner essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our inner underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.0761904761904762
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "women Summer Invisible",
+      "chs_current": 53.91430747211997,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "women-C001",
+          "headline": "Women comfort you can feel all day",
+          "message": "Experience women underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.12
+        },
+        {
+          "id": "women-C002",
+          "headline": "Bras comfort you can feel all day",
+          "message": "Experience bras underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.12
+        },
+        {
+          "id": "women-C003",
+          "headline": "Wire comfort you can feel all day",
+          "message": "Experience wire underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.12
+        },
+        {
+          "id": "women-C004",
+          "headline": "Women sale ends soon",
+          "message": "Stock up on your go-to women essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.0625
+        },
+        {
+          "id": "women-C005",
+          "headline": "Bras sale ends soon",
+          "message": "Stock up on your go-to bras essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.0625
+        },
+        {
+          "id": "women-C006",
+          "headline": "Wire sale ends soon",
+          "message": "Stock up on your go-to wire essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.0625
+        },
+        {
+          "id": "women-C007",
+          "headline": "Women essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our women underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.0784313725490196
+        },
+        {
+          "id": "women-C008",
+          "headline": "Bras essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our bras underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.0784313725490196
+        },
+        {
+          "id": "women-C009",
+          "headline": "Wire essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our wire underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.0784313725490196
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "Men Bold Colors Drop",
+      "chs_current": 35.20973065374739,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "MenBo-C001",
+          "headline": "Men comfort you can feel all day",
+          "message": "Experience men underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenBo-C002",
+          "headline": "Briefs comfort you can feel all day",
+          "message": "Experience briefs underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenBo-C003",
+          "headline": "Athletic comfort you can feel all day",
+          "message": "Experience athletic underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "athletic",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenBo-C004",
+          "headline": "Men sale ends soon",
+          "message": "Stock up on your go-to men essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenBo-C005",
+          "headline": "Briefs sale ends soon",
+          "message": "Stock up on your go-to briefs essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenBo-C006",
+          "headline": "Athletic sale ends soon",
+          "message": "Stock up on your go-to athletic essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "athletic",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenBo-C007",
+          "headline": "Men essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our men underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.0761904761904762
+        },
+        {
+          "id": "MenBo-C008",
+          "headline": "Briefs essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our briefs underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.0761904761904762
+        },
+        {
+          "id": "MenBo-C009",
+          "headline": "Athletic essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our athletic underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "athletic",
+          "overlap_score": 0.0761904761904762
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "MEN Signature Soft",
+      "chs_current": 49.29553156192183,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "MENSi-C001",
+          "headline": "Men comfort you can feel all day",
+          "message": "Experience men underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.12121212121212122
+        },
+        {
+          "id": "MENSi-C002",
+          "headline": "Briefs comfort you can feel all day",
+          "message": "Experience briefs underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.12121212121212122
+        },
+        {
+          "id": "MENSi-C003",
+          "headline": "Inner comfort you can feel all day",
+          "message": "Experience inner underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.12121212121212122
+        },
+        {
+          "id": "MENSi-C004",
+          "headline": "Men sale ends soon",
+          "message": "Stock up on your go-to men essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.06315789473684211
+        },
+        {
+          "id": "MENSi-C005",
+          "headline": "Briefs sale ends soon",
+          "message": "Stock up on your go-to briefs essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.06315789473684211
+        },
+        {
+          "id": "MENSi-C006",
+          "headline": "Inner sale ends soon",
+          "message": "Stock up on your go-to inner essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.06315789473684211
+        },
+        {
+          "id": "MENSi-C007",
+          "headline": "Men essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our men underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.07920792079207921
+        },
+        {
+          "id": "MENSi-C008",
+          "headline": "Briefs essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our briefs underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.07920792079207921
+        },
+        {
+          "id": "MENSi-C009",
+          "headline": "Inner essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our inner underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.07920792079207921
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "Women | Studio Sports",
+      "chs_current": 49.47478586869396,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "Women-C001",
+          "headline": "Women comfort you can feel all day",
+          "message": "Experience women underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "Women-C002",
+          "headline": "Bras comfort you can feel all day",
+          "message": "Experience bras underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "Women-C003",
+          "headline": "Wire comfort you can feel all day",
+          "message": "Experience wire underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "Women-C004",
+          "headline": "Women sale ends soon",
+          "message": "Stock up on your go-to women essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "Women-C005",
+          "headline": "Bras sale ends soon",
+          "message": "Stock up on your go-to bras essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "Women-C006",
+          "headline": "Wire sale ends soon",
+          "message": "Stock up on your go-to wire essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "Women-C007",
+          "headline": "Women essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our women underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.07766990291262135
+        },
+        {
+          "id": "Women-C008",
+          "headline": "Bras essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our bras underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.07766990291262135
+        },
+        {
+          "id": "Women-C009",
+          "headline": "Wire essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our wire underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.07766990291262135
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "Men ComfortMax Launch",
+      "chs_current": 58.87585834663979,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "MenCo-C001",
+          "headline": "Men comfort you can feel all day",
+          "message": "Experience men underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenCo-C002",
+          "headline": "Briefs comfort you can feel all day",
+          "message": "Experience briefs underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenCo-C003",
+          "headline": "Athletic comfort you can feel all day",
+          "message": "Experience athletic underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "athletic",
+          "overlap_score": 0.11650485436893204
+        },
+        {
+          "id": "MenCo-C004",
+          "headline": "Men sale ends soon",
+          "message": "Stock up on your go-to men essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenCo-C005",
+          "headline": "Briefs sale ends soon",
+          "message": "Stock up on your go-to briefs essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenCo-C006",
+          "headline": "Athletic sale ends soon",
+          "message": "Stock up on your go-to athletic essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "athletic",
+          "overlap_score": 0.06060606060606061
+        },
+        {
+          "id": "MenCo-C007",
+          "headline": "Men essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our men underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.0761904761904762
+        },
+        {
+          "id": "MenCo-C008",
+          "headline": "Briefs essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our briefs underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "briefs",
+          "overlap_score": 0.0761904761904762
+        },
+        {
+          "id": "MenCo-C009",
+          "headline": "Athletic essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our athletic underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "athletic",
+          "overlap_score": 0.0761904761904762
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "WOMEN Seamless Everyday",
+      "chs_current": 40.37790564465055,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "WOMEN-C001",
+          "headline": "Women comfort you can feel all day",
+          "message": "Experience women underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "WOMEN-C002",
+          "headline": "Bras comfort you can feel all day",
+          "message": "Experience bras underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "WOMEN-C003",
+          "headline": "Wire comfort you can feel all day",
+          "message": "Experience wire underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "WOMEN-C004",
+          "headline": "Women sale ends soon",
+          "message": "Stock up on your go-to women essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "WOMEN-C005",
+          "headline": "Bras sale ends soon",
+          "message": "Stock up on your go-to bras essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "WOMEN-C006",
+          "headline": "Wire sale ends soon",
+          "message": "Stock up on your go-to wire essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "WOMEN-C007",
+          "headline": "Women essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our women underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.07766990291262135
+        },
+        {
+          "id": "WOMEN-C008",
+          "headline": "Bras essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our bras underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.07766990291262135
+        },
+        {
+          "id": "WOMEN-C009",
+          "headline": "Wire essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our wire underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.07766990291262135
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "Women Fit & Lift",
+      "chs_current": 58.11444033830845,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "Women-C001",
+          "headline": "Women comfort you can feel all day",
+          "message": "Experience women underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "Women-C002",
+          "headline": "Bras comfort you can feel all day",
+          "message": "Experience bras underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "Women-C003",
+          "headline": "Boyshorts comfort you can feel all day",
+          "message": "Experience boyshorts underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "boyshorts",
+          "overlap_score": 0.1188118811881188
+        },
+        {
+          "id": "Women-C004",
+          "headline": "Women sale ends soon",
+          "message": "Stock up on your go-to women essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "Women-C005",
+          "headline": "Bras sale ends soon",
+          "message": "Stock up on your go-to bras essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "Women-C006",
+          "headline": "Boyshorts sale ends soon",
+          "message": "Stock up on your go-to boyshorts essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "boyshorts",
+          "overlap_score": 0.061855670103092786
+        },
+        {
+          "id": "Women-C007",
+          "headline": "Women essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our women underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.07766990291262135
+        },
+        {
+          "id": "Women-C008",
+          "headline": "Bras essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our bras underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.07766990291262135
+        },
+        {
+          "id": "Women-C009",
+          "headline": "Boyshorts essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our boyshorts underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "boyshorts",
+          "overlap_score": 0.07766990291262135
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "WOMEN Cotton Classics",
+      "chs_current": 58.35564623094819,
+      "weak_components": [
+        "text_quality",
+        "behavior"
+      ],
+      "suggestions": [
+        {
+          "id": "WOMEN-C001",
+          "headline": "Women comfort you can feel all day",
+          "message": "Experience women underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.12
+        },
+        {
+          "id": "WOMEN-C002",
+          "headline": "Bras comfort you can feel all day",
+          "message": "Experience bras underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.12
+        },
+        {
+          "id": "WOMEN-C003",
+          "headline": "Wire comfort you can feel all day",
+          "message": "Experience wire underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.12
+        },
+        {
+          "id": "WOMEN-C004",
+          "headline": "Women sale ends soon",
+          "message": "Stock up on your go-to women essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.0625
+        },
+        {
+          "id": "WOMEN-C005",
+          "headline": "Bras sale ends soon",
+          "message": "Stock up on your go-to bras essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.0625
+        },
+        {
+          "id": "WOMEN-C006",
+          "headline": "Wire sale ends soon",
+          "message": "Stock up on your go-to wire essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.0625
+        },
+        {
+          "id": "WOMEN-C007",
+          "headline": "Women essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our women underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "women",
+          "overlap_score": 0.0784313725490196
+        },
+        {
+          "id": "WOMEN-C008",
+          "headline": "Bras essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our bras underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "bras",
+          "overlap_score": 0.0784313725490196
+        },
+        {
+          "id": "WOMEN-C009",
+          "headline": "Wire essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our wire underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality",
+            "behavior"
+          ],
+          "core_term": "wire",
+          "overlap_score": 0.0784313725490196
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    },
+    {
+      "campaign_name": "Men | Athleisure Cooling",
+      "chs_current": 76.09601082836556,
+      "weak_components": [
+        "text_quality"
+      ],
+      "suggestions": [
+        {
+          "id": "Men|-C001",
+          "headline": "Men comfort you can feel all day",
+          "message": "Experience men underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.12244897959183673
+        },
+        {
+          "id": "Men|-C002",
+          "headline": "That comfort you can feel all day",
+          "message": "Experience that underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "that",
+          "overlap_score": 0.12244897959183673
+        },
+        {
+          "id": "Men|-C003",
+          "headline": "Inner comfort you can feel all day",
+          "message": "Experience inner underwear designed for a smooth, invisible fit under every outfit. Soft, breathable fabric keeps you comfortable from morning to night.",
+          "cta": "Shop comfort now",
+          "variant_type": "benefit",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.12244897959183673
+        },
+        {
+          "id": "Men|-C004",
+          "headline": "Men sale ends soon",
+          "message": "Stock up on your go-to men essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.05263157894736842
+        },
+        {
+          "id": "Men|-C005",
+          "headline": "That sale ends soon",
+          "message": "Stock up on your go-to that essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "that",
+          "overlap_score": 0.05263157894736842
+        },
+        {
+          "id": "Men|-C006",
+          "headline": "Inner sale ends soon",
+          "message": "Stock up on your go-to inner essentials with special pricing. Don\u2019t wait\u2014popular sizes go first.",
+          "cta": "Grab your size today",
+          "variant_type": "urgency",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.05263157894736842
+        },
+        {
+          "id": "Men|-C007",
+          "headline": "Men essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our men underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "men",
+          "overlap_score": 0.06930693069306931
+        },
+        {
+          "id": "Men|-C008",
+          "headline": "That essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our that underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "that",
+          "overlap_score": 0.06930693069306931
+        },
+        {
+          "id": "Men|-C009",
+          "headline": "Inner essentials customers keep re-ordering",
+          "message": "Join thousands who switched to our inner underwear for a better fit and softer feel. Once you try them, you won\u2019t go back.",
+          "cta": "See why they love it",
+          "variant_type": "social_proof",
+          "targeted_weakness": [
+            "text_quality"
+          ],
+          "core_term": "inner",
+          "overlap_score": 0.06930693069306931
+        }
+      ],
+      "test_plan": {
+        "control": 50,
+        "variant_1": 25,
+        "variant_2": 25
+      }
+    }
+  ],
+  "generated_at": "2025-11-28T22:51:45.543600Z",
+  "config_used": {
+    "variants_per_type": 3,
+    "low_ctr_threshold": 0.02,
+    "chs_threshold": 60.0,
+    "max_campaigns": 10
+  }
+}

@@ -1,0 +1,31 @@
+data:
+  # You can change this path depending on your repo layout
+  path: data/synthetic_fb_ads_undergarments.csv
+  sample_mode: true        # if true, can sample the dataset for quick runs
+  sample_frac: 0.5         # fraction to sample when sample_mode is true
+  date_col: date
+
+analysis:
+  recent_window_days: 14
+  previous_window_days: 14
+  roas_drop_threshold_pct: -20   # percent drop
+  low_ctr_threshold: 0.02        # 2%
+  min_impressions_for_stats: 1000
+
+evaluator:
+  p_value_threshold: 0.05
+  bootstrap_iters: 2000
+  multiple_testing_method: "benjamini-hochberg"
+
+planner:
+  max_retries: 2
+  reflection_confidence_thresh: 0.4
+
+chs:
+  behavior_weight: 0.5
+  text_weight: 0.3
+  fatigue_weight: 0.2
+
+logging:
+  outdir: logs/
+  level: INFO
