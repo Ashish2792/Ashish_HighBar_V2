@@ -76,13 +76,10 @@ T6 ──▶ 📦 7. AGGREGATOR
           ✔ report.md (human readable)
 
 
-You **closed the mermaid block too early**.  
-Everything after the first three backticks is being treated as plain text.
+## 🧠 Full Agent Architecture
 
----
+Below is the full execution graph that powers the system end-to-end.
 
-
-````markdown
 ```mermaid
 flowchart TD
 
@@ -120,4 +117,4 @@ H -->|insights.json| I[[📝 Insights]]
 H -->|creatives.json| J[[🎨 Creative Variants]]
 H -->|report.md| K[[📄 Final Report]]
 H -->|run_log.json| L[[📂 Execution Logs]]
-
+```
