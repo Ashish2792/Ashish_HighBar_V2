@@ -83,38 +83,39 @@ Below is the full execution graph that powers the system end-to-end.
 ```mermaid
 flowchart TD
 
-A[📥 User Query] --> B[🧭 Planner Agent]
+A["User Query"] --> B["Planner Agent"]
 
-%% ========= Stage 1: Data =========
-B --> T1[T1 ▶ data_load_summary]
-T1 --> C[📊 Data Agent]
+%% ---------- Stage 1: Data ----------
+B --> T1["T1: data_load_summary"]
+T1 --> C["Data Agent"]
 
-%% ========= Stage 2: Insight Generation =========
-C --> T2[T2 ▶ insight_generation]
-T2 --> D[🕵 Insight Agent]
+%% ---------- Stage 2: Insights ----------
+C --> T2["T2: insight_generation"]
+T2 --> D["Insight Agent"]
 
-%% ========= Stage 3: Metric Evaluation =========
-D --> T3[T3 ▶ metric_evaluation]
-T3 --> E[📏 Metric Evaluator]
+%% ---------- Stage 3: Metric Evaluation ----------
+D --> T3["T3: metric_evaluation"]
+T3 --> E["Metric Evaluator"]
 
-%% ========= Stage 4: Creative Evaluation =========
-C --> T4[T4 ▶ creative_evaluation]
-T4 --> F[🎨 Creative Evaluator (CHS)]
+%% ---------- Stage 4: CHS Creative Evaluation ----------
+C --> T4["T4: creative_evaluation"]
+T4 --> F["Creative Evaluator (CHS)"]
 
-%% ========= Stage 5: Creative Generation =========
-E --> T5[T5 ▶ creative_generation]
+%% ---------- Stage 5: Creative Generation ----------
+E --> T5["T5: creative_generation"]
 F --> T5
-T5 --> G[🧪 Creative Generator]
+T5 --> G["Creative Generator"]
 
-%% ========= Stage 6: Final Aggregation =========
-G --> T6[T6 ▶ final_aggregation]
+%% ---------- Stage 6: Final Aggregation ----------
+G --> T6["T6: final_aggregation"]
 E --> T6
 F --> T6
-T6 --> H[📦 Aggregator / Output Writer]
+T6 --> H["Aggregator / Output Writer"]
 
-%% ========= Output Artifacts =========
-H -->|insights.json| I[[📝 Insights]]
-H -->|creatives.json| J[[🎨 Creative Variants]]
-H -->|report.md| K[[📄 Final Report]]
-H -->|run_log.json| L[[📂 Execution Logs]]
+%% ---------- Final Artifacts ----------
+H -->|insights.json| I["Insights"]
+H -->|creatives.json| J["Creative Variants"]
+H -->|report.md| K["Final Report"]
+H -->|run_log.json| L["Execution Logs"]
 ```
+
