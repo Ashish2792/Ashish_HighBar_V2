@@ -30,7 +30,7 @@ class DataAgent:
         - CTR/ROAS are derived metrics; downstream agents depend on them.
     """
 
-
+from src.utils.errors import wrap_exc, DataAgentError
 from typing import Dict, Any, Optional, List
 import pandas as pd
 import numpy as np
@@ -150,7 +150,31 @@ class DataAgent:
         return None
 
     def _load_csv(self, path: str, sample_mode: str = "auto") -> pd.DataFrame:
-        df = pd.read_csv(path)
+        """
+        Load CSV from disk with basic error handling and optional sampling.
+
+        This is the first point where we touch user data, so we:
+        - wrap file-not-found and IO issues as DataAgentError with context
+        - infer the date column
+        - optionally sample rows for speed (controlled by config)
+        """
+        try:
+            df = pd.read_csv(path)
+        except FileNotFoundError as e:
+            # Wrap file-not-found in a typed error with a clear message
+            raise wrap_exc(
+                f"DataAgent could not find dataset at path: {path}",
+                e,
+                DataAgentError,
+            )
+        except Exception as e:
+            # Any other read error — malformed CSV, permissions, encoding, etc.
+            raise wrap_exc(
+                f"DataAgent failed to read CSV from path: {path}",
+                e,
+                DataAgentError,
+            )
+
         original_rows = int(df.shape[0])
 
         inferred_date = self._infer_date_column(df)
@@ -186,6 +210,7 @@ class DataAgent:
             }
 
         return df
+
 
     def _validate_and_patch_columns(self, df: pd.DataFrame) -> Dict[str, Any]:
         """

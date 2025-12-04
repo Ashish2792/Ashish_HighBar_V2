@@ -79,7 +79,7 @@ class MetricEvaluatorAgent:
         self,
         hypotheses: List[Dict[str, Any]],
         data_summary: Dict[str, Any],
-        params: Optional[Dict[str, Any]] = None
+        params: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Evaluate hypotheses using numeric metrics.
@@ -90,16 +90,32 @@ class MetricEvaluatorAgent:
           "config_used": {...}
         }
         """
-        self.logger.info("start", "run_metric_evaluation start", {"n_hypotheses": len(hypotheses)})
+
+        self.logger.info(
+            "start",
+            "run_metric_evaluation start",
+            {"n_hypotheses": len(hypotheses)},
+        )
         try:
+            # Allow overrides from params (windows, p-value threshold, seed, etc.)
             if params:
-                for k in ["recent_window_days", "previous_window_days", "p_value_threshold", "bootstrap_iters", "seed"]:
+                for k in [
+                    "recent_window_days",
+                    "previous_window_days",
+                    "p_value_threshold",
+                    "bootstrap_iters",
+                    "seed",
+                ]:
                     if k in params:
                         self.config[k] = params[k]
                 # re-seed if provided
                 if "seed" in params:
                     random.seed(self.config.get("seed", 42))
-                self.logger.debug("config_update", "Updated config from params", {"updated_keys": list(params.keys())})
+                self.logger.debug(
+                    "config_update",
+                    "Updated config from params",
+                    {"updated_keys": list(params.keys())},
+                )
 
             global_daily = data_summary.get("global_daily", [])
             campaign_daily = data_summary.get("campaign_daily", [])
@@ -111,6 +127,7 @@ class MetricEvaluatorAgent:
                 daily_by_campaign.setdefault(cname, []).append(row)
 
             evaluated: List[Dict[str, Any]] = []
+
             for hyp in hypotheses:
                 # Copy to avoid mutating original
                 h = dict(hyp)
@@ -118,45 +135,97 @@ class MetricEvaluatorAgent:
                 # Only evaluate if it requests metric evidence
                 required = h.get("required_evidence", [])
                 if "metric_significance" not in required:
-                    # still pass it through unchanged
                     evaluated.append(h)
                     continue
 
                 scope = h.get("scope")
                 cname = h.get("campaign_name")
 
+                # Select the appropriate daily series
                 if scope == "overall":
                     series = global_daily
                 elif scope == "campaign" and cname in daily_by_campaign:
-                    # sort by date
-                    series = sorted(daily_by_campaign[cname], key=lambda r: r["date"])
+                    series = sorted(
+                        daily_by_campaign[cname], key=lambda r: r["date"]
+                    )
                 else:
-                    # can't evaluate
+                    # Cannot evaluate (no series available)
                     h["metric_confidence"] = 0.0
                     h["validated"] = False
+                    h["metric_confidence_explanation"] = (
+                        "Metric evaluation skipped: no daily series available for this hypothesis."
+                    )
+                    self.logger.warn(
+                        "skip_evaluate",
+                        "Cannot evaluate hypothesis due to missing series",
+                        {
+                            "hypothesis_id": h.get("id"),
+                            "scope": scope,
+                            "campaign": cname,
+                        },
+                    )
                     evaluated.append(h)
-                    self.logger.warn("skip_evaluate", "Cannot evaluate hypothesis due to missing series", {"hypothesis_id": h.get("id"), "scope": scope, "campaign": cname})
                     continue
 
+                # Split into previous vs recent windows
                 prev, recent = self._split_windows(
                     series,
                     self.config["recent_window_days"],
-                    self.config["previous_window_days"]
+                    self.config["previous_window_days"],
                 )
 
+                # Guard: if either window is empty, we cannot do a meaningful test
                 if not prev or not recent:
                     h["metric_confidence"] = 0.0
                     h["validated"] = False
+                    h["metric_confidence_components"] = {
+                        "base": 0.5,
+                        "volume_factor": 0.0,
+                        "significance_factor": 0.0,
+                        "stability_factor": 0.0,
+                    }
+                    h["metric_confidence_explanation"] = (
+                        "Metric evaluation skipped: insufficient data in previous "
+                        "or recent window for this hypothesis."
+                    )
+                    h["metric_effect_size_pct"] = 0.0
+                    h["metric_p_value_roas"] = None
+                    h["metric_p_value_ctr"] = None
+                    h["metric_sample"] = {
+                        "prev_days": len(prev),
+                        "recent_days": len(recent),
+                        "prev_impressions": 0,
+                        "recent_impressions": 0,
+                        "prev_clicks": 0,
+                        "recent_clicks": 0,
+                        "note": "insufficient data for robust comparison",
+                    }
+                    self.logger.warn(
+                        "insufficient_window",
+                        "Insufficient prev/recent windows for evaluation",
+                        {
+                            "hypothesis_id": h.get("id"),
+                            "len_prev": len(prev),
+                            "len_recent": len(recent),
+                        },
+                    )
                     evaluated.append(h)
-                    self.logger.warn("insufficient_window", "Insufficient prev/recent windows for evaluation", {"hypothesis_id": h.get("id"), "len_prev": len(prev), "len_recent": len(recent)})
                     continue
 
                 # Collect daily metrics
-                prev_roas_vals = [row.get("roas") for row in prev if row.get("roas") is not None]
-                recent_roas_vals = [row.get("roas") for row in recent if row.get("roas") is not None]
+                prev_roas_vals = [
+                    row.get("roas") for row in prev if row.get("roas") is not None
+                ]
+                recent_roas_vals = [
+                    row.get("roas") for row in recent if row.get("roas") is not None
+                ]
 
-                prev_ctr_vals = [row.get("ctr") for row in prev if row.get("ctr") is not None]
-                recent_ctr_vals = [row.get("ctr") for row in recent if row.get("ctr") is not None]
+                prev_ctr_vals = [
+                    row.get("ctr") for row in prev if row.get("ctr") is not None
+                ]
+                recent_ctr_vals = [
+                    row.get("ctr") for row in recent if row.get("ctr") is not None
+                ]
 
                 prev_impr = sum(row.get("impressions", 0) for row in prev)
                 recent_impr = sum(row.get("impressions", 0) for row in recent)
@@ -171,104 +240,136 @@ class MetricEvaluatorAgent:
                 # Effect size: default to ROAS pct change; fallback to CTR if ROAS missing
                 effect_roas_pct = self._pct_change(prev_roas, recent_roas)
                 effect_ctr_pct = self._pct_change(prev_ctr, recent_ctr)
-                effect_size_pct = effect_roas_pct if effect_roas_pct is not None else effect_ctr_pct
+                effect_size_pct = (
+                    effect_roas_pct
+                    if effect_roas_pct is not None
+                    else effect_ctr_pct
+                )
 
                 # p-values
                 p_roas = None
-                if prev_roas_vals and recent_roas_vals and len(prev_roas_vals) >= 2 and len(recent_roas_vals) >= 2:
-                    p_roas = self._bootstrap_p_value(prev_roas_vals, recent_roas_vals, int(self.config.get("bootstrap_iters", 1000)))
+                if (
+                    prev_roas_vals
+                    and recent_roas_vals
+                    and len(prev_roas_vals) >= 2
+                    and len(recent_roas_vals) >= 2
+                ):
+                    p_roas = self._bootstrap_p_value(
+                        prev_roas_vals,
+                        recent_roas_vals,
+                        int(self.config.get("bootstrap_iters", 1000)),
+                    )
 
                 p_ctr = None
                 if prev_impr > 0 and recent_impr > 0 and prev_clicks >= 0 and recent_clicks >= 0:
                     p_ctr = self._proportion_ztest(
-                        prev_clicks, prev_impr,
-                        recent_clicks, recent_impr
+                        prev_clicks,
+                        prev_impr,
+                        recent_clicks,
+                        recent_impr,
                     )
 
                 total_impr = prev_impr + recent_impr
                 n_days_prev = len(prev)
                 n_days_recent = len(recent)
+                total_days = n_days_prev + n_days_recent
 
-                            # Confidence components
-            base = 0.5
-            total_days = n_days_prev + n_days_recent
-            volume_factor = self._volume_factor(total_impr)
-            p_for_conf = p_roas if p_roas is not None else p_ctr
-            significance_factor = self._significance_factor(
-                p_for_conf,
-                self.config["p_value_threshold"]
-            )
-            stability_factor = self._stability_factor(total_days)
+                # Confidence components
+                base = 0.5
+                volume_factor = self._volume_factor(total_impr)
+                p_for_conf = p_roas if p_roas is not None else p_ctr
+                significance_factor = self._significance_factor(
+                    p_for_conf, self.config["p_value_threshold"]
+                )
+                stability_factor = self._stability_factor(total_days)
 
-            metric_confidence = base * volume_factor * significance_factor * stability_factor
+                metric_confidence = (
+                    base * volume_factor * significance_factor * stability_factor
+                )
 
-            # Decide validation based on effect size + confidence
-            validated = False
-            if effect_size_pct is not None:
-                if abs(effect_size_pct) >= 5 and metric_confidence >= 0.5:
-                    validated = True
+                # Decide validation based on effect size + confidence
+                validated = False
+                if effect_size_pct is not None:
+                    if abs(effect_size_pct) >= 5 and metric_confidence >= 0.5:
+                        validated = True
 
-            # Build a human-readable explanation of where confidence came from
-            if p_for_conf is None:
-                sig_text = "no reliable p-value (very low or noisy volume)"
-            else:
-                if p_for_conf < self.config["p_value_threshold"]:
-                    sig_text = f"statistically significant (p={p_for_conf:.3g})"
-                elif p_for_conf < 2 * self.config["p_value_threshold"]:
-                    sig_text = f"borderline significant (p={p_for_conf:.3g})"
+                # Build a human-readable explanation of where confidence came from
+                if p_for_conf is None:
+                    sig_text = "no reliable p-value (very low or noisy volume)"
                 else:
-                    sig_text = f"not strongly significant (p={p_for_conf:.3g})"
+                    if p_for_conf < self.config["p_value_threshold"]:
+                        sig_text = f"statistically significant (p={p_for_conf:.3g})"
+                    elif p_for_conf < 2 * self.config["p_value_threshold"]:
+                        sig_text = f"borderline significant (p={p_for_conf:.3g})"
+                    else:
+                        sig_text = f"not strongly significant (p={p_for_conf:.3g})"
 
-            vol_text = f"{int(total_impr):,} impressions over {total_days} days"
+                vol_text = f"{int(total_impr):,} impressions over {total_days} days"
 
-            if effect_size_pct is None:
-                eff_text = "no clear directional change in ROAS/CTR"
-            else:
-                eff_text = f"{effect_size_pct:+.1f}% change in primary metric"
+                if effect_size_pct is None:
+                    eff_text = "no clear directional change in ROAS/CTR"
+                else:
+                    eff_text = f"{effect_size_pct:+.1f}% change in primary metric"
 
-            h["metric_confidence_components"] = {
-                "base": base,
-                "volume_factor": float(volume_factor),
-                "significance_factor": float(significance_factor),
-                "stability_factor": float(stability_factor),
-            }
-            h["metric_confidence_explanation"] = (
-                f"Metric confidence {metric_confidence:.2f} derived from {sig_text}, "
-                f"with {vol_text}. Effect size: {eff_text}."
-            )
+                h["metric_confidence_components"] = {
+                    "base": base,
+                    "volume_factor": float(volume_factor),
+                    "significance_factor": float(significance_factor),
+                    "stability_factor": float(stability_factor),
+                }
+                h["metric_confidence_explanation"] = (
+                    f"Metric confidence {metric_confidence:.2f} derived from {sig_text}, "
+                    f"with {vol_text}. Effect size: {eff_text}."
+                )
 
-            # Attach evaluation details
-            h["metric_confidence"] = float(metric_confidence)
-            h["validated"] = bool(validated)
-            h["metric_effect_size_pct"] = effect_size_pct
-            h["metric_p_value_roas"] = p_roas
-            h["metric_p_value_ctr"] = p_ctr
-            h["metric_sample"] = {
-                "prev_days": n_days_prev,
-                "recent_days": n_days_recent,
-                "prev_impressions": int(prev_impr),
-                "recent_impressions": int(recent_impr),
-                "prev_clicks": int(prev_clicks),
-                "recent_clicks": int(recent_clicks),
-            }
+                # Attach evaluation details
+                h["metric_confidence"] = float(metric_confidence)
+                h["validated"] = bool(validated)
+                h["metric_effect_size_pct"] = effect_size_pct
+                h["metric_p_value_roas"] = p_roas
+                h["metric_p_value_ctr"] = p_ctr
+                h["metric_sample"] = {
+                    "prev_days": n_days_prev,
+                    "recent_days": n_days_recent,
+                    "prev_impressions": int(prev_impr),
+                    "recent_impressions": int(recent_impr),
+                    "prev_clicks": int(prev_clicks),
+                    "recent_clicks": int(recent_clicks),
+                }
 
-            evaluated.append(h)
+                evaluated.append(h)
 
             result = {
                 "evaluated_hypotheses": evaluated,
-                "config_used": self.config,
-                "evaluated_at": datetime.datetime.utcnow().isoformat() + "Z"
+                "config_used": dict(self.config),
+                "evaluated_at": datetime.datetime.utcnow().isoformat() + "Z",
             }
-            self.logger.info("success", "run_metric_evaluation completed", {"evaluated_count": len(evaluated)})
+            self.logger.info(
+                "success",
+                "run_metric_evaluation completed",
+                {"evaluated_count": len(evaluated)},
+            )
             return result
+
         except MetricEvaluatorError:
             # already typed, re-raise after logging
-            self.logger.error("metric_error", "MetricEvaluator encountered a known error", {"trace": traceback.format_exc()})
+            self.logger.error(
+                "metric_error",
+                "MetricEvaluator encountered a known error",
+                {"trace": traceback.format_exc()},
+            )
             raise
         except Exception as e:
-            self.logger.error("exception", "Unhandled exception in MetricEvaluator", {"trace": traceback.format_exc()})
-            raise wrap_exc("MetricEvaluator failed during run_metric_evaluation", e, MetricEvaluatorError)
-
+            self.logger.error(
+                "exception",
+                "Unhandled exception in MetricEvaluator",
+                {"trace": traceback.format_exc()},
+            )
+            raise wrap_exc(
+                "MetricEvaluator failed during run_metric_evaluation",
+                e,
+                MetricEvaluatorError,
+            )
     # ---------- Internal helpers ----------
 
     def _parse_date(self, datestr: str) -> datetime.date:

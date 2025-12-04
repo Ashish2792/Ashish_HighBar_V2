@@ -305,11 +305,19 @@ def main():
 
     args = parser.parse_args()
 
+    # Normalize and validate query
+    query = (args.query or "").strip()
+    if not query:
+        print("No problem statement provided.")
+        print("Example usage:")
+        print('  python run.py "Analyze ROAS drop" --outdir reports/')
+        return
+
     cfg = load_config(args.config)
     data_path = args.data_path or cfg["data"]["path"]
 
     execute_plan(
-        query=args.query,
+        query=query,
         cfg=cfg,
         data_path=data_path,
         outdir=args.outdir,
@@ -318,3 +326,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
