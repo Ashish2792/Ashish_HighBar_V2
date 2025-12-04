@@ -1,18 +1,19 @@
+# src/orchestrator/aggregator.py
 """
-src/orchestrator/aggregator.py
-Final aggregation and report writing.
+Aggregator: collects outputs from agents and writes final artifacts:
+ - reports/insights.json
+ - reports/creatives.json
+ - reports/report.md
 
-Responsibilities:
-- Combine evaluated hypotheses (metric + creative) into final_confidence.
-- Serialize insights.json and creatives.json.
-- Generate a human-readable report.md.
+This version is tolerant to both 'variant_type' (old generator) and 'variant_style' (V2),
+and will not raise if those keys are missing. It also gracefully handles missing fields.
 """
 
-from typing import Dict, Any, List
-from pathlib import Path
+from typing import Dict, Any, List, Optional
+import os
 import json
 import datetime
-
+from pathlib import Path
 
 class Aggregator:
     def __init__(self):
@@ -24,155 +25,163 @@ class Aggregator:
         data_summary: Dict[str, Any],
         hypotheses: List[Dict[str, Any]],
         creative_output: Dict[str, Any],
-        outdir: Path,
-    ) -> Dict[str, Any]:
+        outdir: Path
+    ) -> Dict[str, str]:
         """
-        Merge metric + creative evidence, compute final_confidence,
-        and write artifacts to disk.
+        Aggregates inputs and writes outputs to outdir.
+        Returns a dict with filesystem paths for the written artifacts.
         """
         outdir.mkdir(parents=True, exist_ok=True)
 
-        # 1) Compute final_confidence per hypothesis
-        enriched_hyps = self._compute_final_confidence(hypotheses)
+        insights = {
+            "plan": plan,
+            "data_summary_meta": data_summary.get("meta", {}),
+            "hypotheses": hypotheses,
+            "generated_at": datetime.datetime.utcnow().isoformat() + "Z"
+        }
 
-        # 2) Write insights.json  (JSON is ASCII-safe but we still set utf-8)
+        creatives = creative_output or {"creatives": []}
+
+        # write JSON artifacts
         insights_path = outdir / "insights.json"
-        with open(insights_path, "w", encoding="utf-8") as f:
-            json.dump({"hypotheses": enriched_hyps}, f, indent=2)
-
-        # 3) Write creatives.json
         creatives_path = outdir / "creatives.json"
-        with open(creatives_path, "w", encoding="utf-8") as f:
-            json.dump(creative_output, f, indent=2)
-
-        # 4) Write report.md  🔧 force UTF-8
         report_path = outdir / "report.md"
-        report_md = self._build_report_md(
-            plan=plan,
-            data_summary=data_summary,
-            hypotheses=enriched_hyps,
-            creative_output=creative_output,
-        )
+
+        with open(insights_path, "w", encoding="utf-8") as f:
+            json.dump(insights, f, indent=2, ensure_ascii=False)
+
+        with open(creatives_path, "w", encoding="utf-8") as f:
+            json.dump(creatives, f, indent=2, ensure_ascii=False)
+
+        # write a human-readable markdown report
+        report_md = self._build_report_md(plan, data_summary, hypotheses, creatives)
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(report_md)
 
         return {
             "insights_path": str(insights_path),
             "creatives_path": str(creatives_path),
-            "report_path": str(report_path),
+            "report_path": str(report_path)
         }
 
-
-    # ---------- confidence combination ----------
-
-    def _compute_final_confidence(self, hypotheses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        out = []
-        for h in hypotheses:
-            h2 = dict(h)
-            metric_conf = h2.get("metric_confidence")
-            creative_conf = h2.get("creative_confidence")
-            initial_conf = h2.get("initial_confidence", 0.4)
-            driver_type = h2.get("driver_type", "overall")
-
-            if metric_conf is None and creative_conf is None:
-                final_conf = initial_conf
-            elif driver_type == "creative":
-                # combine both where available, bias slightly toward metric evidence
-                m = metric_conf if metric_conf is not None else initial_conf
-                c = creative_conf if creative_conf is not None else 0.4
-                final_conf = 0.6 * m + 0.4 * c
-            else:
-                # non-creative hypotheses: rely mostly on metric evidence
-                if metric_conf is not None:
-                    final_conf = metric_conf
-                else:
-                    final_conf = initial_conf
-
-            # clamp to [0,1]
-            final_conf = max(0.0, min(1.0, final_conf))
-            h2["final_confidence"] = float(final_conf)
-            out.append(h2)
-        return out
-
-    # ---------- report generation ----------
+    def _safe_get(self, d: Dict[str, Any], key: str, default=None):
+        if not isinstance(d, dict):
+            return default
+        return d.get(key, default)
 
     def _build_report_md(
         self,
         plan: Dict[str, Any],
         data_summary: Dict[str, Any],
         hypotheses: List[Dict[str, Any]],
-        creative_output: Dict[str, Any],
+        creatives: Dict[str, Any]
     ) -> str:
-        lines = []
-        ts = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%SZ")
-        query_info = plan.get("query_info", {})
+        """
+        Build a markdown report summarizing:
+         - plan and config
+         - top hypotheses (validated)
+         - creative suggestions (campaign-level)
+        """
+        lines: List[str] = []
+        now = datetime.datetime.utcnow().isoformat() + "Z"
+        lines.append(f"# Kasparro Agentic FB-Analyst Report\n")
+        lines.append(f"_Generated at: {now}_\n")
+        lines.append("## 1) Plan summary\n")
+        q = plan.get("query_info", {}).get("raw_query", "N/A")
+        lines.append(f"- Query: **{q}**\n")
+        lines.append(f"- Tasks: {len(plan.get('tasks', []))}\n")
+        lines.append("\n## 2) Dataset meta\n")
         meta = data_summary.get("meta", {})
+        lines.append(f"- Rows: {meta.get('n_rows', 'N/A')}")
+        lines.append(f"- Date range: {meta.get('date_min', 'N/A')} → {meta.get('date_max', 'N/A')}")
+        lines.append(f"- Campaigns: {meta.get('n_campaigns', 'N/A')}")
+        lines.append("")
 
-        # Header
-        lines.append(f"# Facebook Performance Analysis Report\n")
-        lines.append(f"_Generated at {ts}_  \n")
-        lines.append(f"**Query:** {query_info.get('raw_query', '')}\n")
-        lines.append("---\n")
-
-        # Meta section
-        lines.append("## Dataset Overview\n")
-        lines.append(f"- Rows: **{meta.get('n_rows', 'NA')}**")
-        lines.append(f"- Campaigns: **{meta.get('n_campaigns', 'NA')}**")
-        lines.append(f"- Ad sets: **{meta.get('n_adsets', 'NA')}**")
-        lines.append(f"- Creatives: **{meta.get('n_creatives', 'NA')}**")
-        lines.append(f"- Date range: **{meta.get('date_min', 'NA')} → {meta.get('date_max', 'NA')}**\n")
-
-        # Top hypotheses
-        lines.append("## Top Insights\n")
+        # Hypotheses: show top validated ones first
+        lines.append("## 3) Hypotheses (top validated first)\n")
         if not hypotheses:
-            lines.append("_No hypotheses were generated._\n")
+            lines.append("_No hypotheses generated._\n")
         else:
-            # sort by final_confidence desc
-            top = sorted(hypotheses, key=lambda h: h.get("final_confidence", 0.0), reverse=True)[:10]
-            for h in top:
-                cid = h.get("id")
-                scope = h.get("scope")
-                cname = h.get("campaign_name") or "Overall"
-                driver = h.get("driver_type")
-                conf = h.get("final_confidence", 0.0)
-                hypothesis_text = h.get("hypothesis", "")
-                rationale = h.get("rationale", "")
-                lines.append(f"### {cid} — {cname} ({scope}, driver: {driver}, confidence: {conf:.2f})\n")
-                lines.append(f"- **Hypothesis:** {hypothesis_text}")
-                lines.append(f"- **Rationale:** {rationale}\n")
+            # sort by final_confidence or metric_confidence/initial_confidence
+            def hyp_score(h):
+                return float(h.get("final_confidence") or h.get("metric_confidence") or h.get("initial_confidence") or 0.0)
+            sorted_h = sorted(hypotheses, key=hyp_score, reverse=True)
+            for h in sorted_h[:20]:
+                hid = h.get("id", "N/A")
+                scope = h.get("scope", "N/A")
+                cname = h.get("campaign_name", "N/A")
+                driver = h.get("driver_type", "N/A")
+                conf = hyp_score(h)
+                lines.append(f"- **{hid}** | scope: _{scope}_ | campaign: _{cname}_ | driver: _{driver}_ | confidence: **{conf:.2f}**")
+                # short rationale
+                if h.get("rationale"):
+                    lines.append(f"  - Rationale: {h.get('rationale')}")
+                # metrics snapshot if present
+                ms = h.get("metrics_snapshot")
+                if isinstance(ms, dict):
+                    prev = ms.get("prev", {})
+                    recent = ms.get("recent", {})
+                    lines.append(f"  - Metrics (prev → recent): ROAS {prev.get('roas','N/A')} → {recent.get('roas','N/A')}, CTR {prev.get('ctr','N/A')} → {recent.get('ctr','N/A')}")
+                lines.append("")
 
-        # Creative recommendations
-        lines.append("## Creative Recommendations\n")
-        creatives = creative_output.get("creatives", [])
-        if not creatives:
-            lines.append("_No creative recommendations generated._\n")
+        # Creatives: campaign-level sections
+        lines.append("## 4) Creative suggestions\n")
+        creatives_list = creatives.get("creatives", []) if isinstance(creatives, dict) else []
+
+        if not creatives_list:
+            lines.append("_No creative suggestions generated._\n")
         else:
-            for block in creatives:
-                cname = block.get("campaign_name", "Unknown Campaign")
-                chs = block.get("chs_current")
-                weak = block.get("weak_components", [])
-                lines.append(f"### Campaign: {cname}\n")
-                if chs is not None:
-                    lines.append(f"- **Current CHS:** {chs:.1f}")
-                if weak:
-                    lines.append(f"- **Weak components:** {', '.join(weak)}")
-                test_plan = block.get("test_plan", {})
-                if test_plan:
-                    lines.append(f"- **Suggested test split:** {test_plan}\n")
+            for c in creatives_list:
+                cname = c.get("campaign_name", "N/A")
+                chs = c.get("chs_current", None)
+                weak = c.get("weak_components", [])
+                suggestions = c.get("suggestions", [])
+                lines.append(f"### Campaign: **{cname}**  ")
+                lines.append(f"- CHS (recent): {chs}  ")
+                lines.append(f"- Weak components: {', '.join(weak) if weak else 'N/A'}  ")
+                lines.append(f"- Suggestions: {len(suggestions)}  ")
+                lines.append("")
 
-                # Show top 3 suggestions
-                suggestions = block.get("suggestions", [])[:3]
-                for s in suggestions:
-                    lines.append(f"- **Variant ({s['variant_type']}):**")
-                    lines.append(f"  - Headline: {s['headline']}")
-                    lines.append(f"  - Message: {s['message']}")
-                    lines.append(f"  - CTA: {s['cta']}\n")
+                if not suggestions:
+                    lines.append("_No suggestions available_\n")
+                    continue
 
-        # Checklist
-        lines.append("## Action Checklist\n")
-        lines.append("- [ ] Pause or reduce budget on campaigns with low-confidence but severely negative ROAS.")
-        lines.append("- [ ] Prioritize creative tests in campaigns flagged with low CHS and low CTR.")
-        lines.append("- [ ] For funnel-driven hypotheses, inspect landing page, pricing, and checkout analytics.")
-        lines.append("- [ ] Re-run this agent after at least 7 days of new data to validate changes.\n")
+                # enumerate suggestions with tolerant keys
+                for idx, s in enumerate(suggestions, start=1):
+                    # support both variant keys
+                    variant = s.get("variant_type") or s.get("variant_style") or s.get("variant") or "variant"
+                    headline = s.get("headline") or s.get("title") or ""
+                    message = s.get("message") or s.get("body") or ""
+                    cta = s.get("cta") or s.get("cta_text") or ""
+                    overlap = s.get("overlap_score", None)
+                    risk = s.get("risk_level", None)
+                    reasoning = s.get("reasoning_chain", [])
+                    chs_targets = s.get("chs_targets", s.get("targeted_weakness", []))
+
+                    lines.append(f"- **Suggestion {idx}** ({variant})")
+                    if headline:
+                        lines.append(f"  - Headline: {headline}")
+                    if message:
+                        # keep message short in report (first 200 chars)
+                        msg_short = message if len(message) <= 200 else message[:197] + "..."
+                        lines.append(f"  - Message: {msg_short}")
+                    if cta:
+                        lines.append(f"  - CTA: {cta}")
+                    if overlap is not None:
+                        lines.append(f"  - Overlap score vs existing creatives: {overlap:.2f}")
+                    if risk:
+                        lines.append(f"  - Risk level: {risk}")
+                    if chs_targets:
+                        lines.append(f"  - CHS targets: {', '.join(chs_targets)}")
+                    if reasoning:
+                        # include top 2 reasoning bullets
+                        for r in (reasoning[:2] if isinstance(reasoning, list) else [reasoning]):
+                            lines.append(f"  - Reason: {r}")
+                    lines.append("")
+
+        # Footer: run metadata
+        lines.append("---")
+        lines.append("Generated by Kasparro Agentic FB-Analyst")
+        lines.append("")
 
         return "\n".join(lines)

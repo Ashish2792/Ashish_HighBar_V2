@@ -1,36 +1,88 @@
-"""
-src/agents/creative_generator.py
-Creative Generator Agent.
+class CreativeGeneratorAgent:
+    """
+    CreativeGeneratorAgent
 
-Responsibilities:
-- For campaigns with creative issues (low CTR, low CHS, creative-related hypotheses),
-  generate new creative ideas:
-    * headlines
-    * messages
-    * CTAs
-- Ground suggestions in:
-    * existing text_terms[campaign] (top tokens)
-    * existing creative messages (to avoid total mismatch)
-    * CHS weak components (text quality vs fatigue)
-- Output structured creatives ready for creatives.json.
-"""
+    Role:
+        Implements T5: `creative_generation`.
+        For campaigns with clear creative issues (low CTR or low CHS),
+        generate grounded creative suggestions and a lightweight test plan.
+
+    Inputs:
+        - data_summary:
+            - campaign_summary
+            - creative_summary
+            - text_terms
+        - chs_summary: from CreativeEvaluatorAgent["chs_summary"].
+        - hypotheses: evaluated hypotheses (may contain creative_confidence).
+        - config/params:
+            - variants_per_type
+            - low_ctr_threshold
+            - chs_threshold
+            - max_campaigns
+
+    Outputs:
+        - {
+            "creatives": [
+                {
+                    "campaign_name": ...,
+                    "chs_current": ...,
+                    "weak_components": {...},
+                    "suggestions": [
+                        {
+                            "variant_id": ...,
+                            "variant_type": "benefit" | "urgency" | "social_proof",
+                            "headline": ...,
+                            "primary_text": ...,
+                            "cta": ...,
+                            "tags": [...]
+                        },
+                        ...
+                    ],
+                    "test_plan": {...}
+                },
+                ...
+            ],
+            "generated_at": ISO timestamp,
+            "config_used": {...}
+          }
+
+    Assumptions:
+        - We prefer campaigns that have either low CTR or CHS below the
+          configured threshold, and we cap the total number via `max_campaigns`.
+        - Suggestions are grounded in `text_terms` and existing messages to
+          avoid totally off-brand ideas.
+        - Test plan is deliberately simple: 1 control + 2 variants with
+          predefined traffic splits.
+    """
+
 
 from typing import Dict, Any, List, Optional, Set
 import datetime
 import re
 from collections import defaultdict
+import random
+import traceback
 
+# logging & errors
+from src.utils.logger import AgentLogger
+from src.utils.errors import CreativeGeneratorError, wrap_exc
 
 class CreativeGeneratorAgent:
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None, run_id: Optional[str] = None):
+        # keep original defaults but allow overrides
         self.config = {
             "variants_per_type": 3,
             "low_ctr_threshold": 0.02,
             "chs_threshold": 60.0,  # CHS below this considered weak
             "max_campaigns": 10,    # limit generation to top N campaigns
+            "seed": 2025,
+            "overlap_threshold": 0.75,  # drop suggestions that overlap too much with existing creatives
         }
         if config:
             self.config.update(config)
+        self.run_id = run_id
+        self.logger = AgentLogger("CreativeGenerator", run_id=self.run_id)
+        random.seed(self.config.get("seed", 2025))
 
     # ---------- Public API ----------
 
@@ -43,71 +95,95 @@ class CreativeGeneratorAgent:
     ) -> Dict[str, Any]:
         """
         Main entry point for T5: 'creative_generation'.
-
-        data_summary: output of DataAgent
-        chs_summary: output of CreativeEvaluatorAgent["chs_summary"]
-        hypotheses: evaluated hypotheses (including creative_confidence if available)
-        params: overrides from Planner (e.g., variants_per_type, target)
         """
-        if params:
-            for k in ["variants_per_type", "low_ctr_threshold", "chs_threshold", "max_campaigns"]:
-                if k in params:
-                    self.config[k] = params[k]
+        self.logger.info("start", "creative generation start", {"n_hypotheses": len(hypotheses)})
+        try:
+            if params:
+                for k in ["variants_per_type", "low_ctr_threshold", "chs_threshold", "max_campaigns", "seed", "overlap_threshold"]:
+                    if k in params:
+                        self.config[k] = params[k]
+                # reseed if seed provided
+                random.seed(self.config.get("seed", 2025))
+                self.logger.debug("config_update", "Updated creative generator config", {"updated_keys": list(params.keys())})
 
-        campaign_summary = data_summary.get("campaign_summary", [])
-        creative_summary = data_summary.get("creative_summary", [])
-        text_terms = data_summary.get("text_terms", {})
+            campaign_summary = data_summary.get("campaign_summary", [])
+            creative_summary = data_summary.get("creative_summary", [])
+            text_terms = data_summary.get("text_terms", {})
 
-        # 1) Identify target campaigns
-        target_campaigns = self._select_target_campaigns(
-            campaign_summary,
-            chs_summary,
-            hypotheses
-        )
-
-        # Group existing creative messages per campaign
-        creatives_by_campaign: Dict[str, List[str]] = defaultdict(list)
-        for row in creative_summary:
-            creatives_by_campaign[row["campaign_name"]].append(str(row["creative_message"]))
-
-        creatives_out: List[Dict[str, Any]] = []
-
-        for cname in target_campaigns:
-            chs_info = chs_summary.get(cname)
-            terms = text_terms.get(cname, [])
-            existing_msgs = creatives_by_campaign.get(cname, [])
-
-            weak_components = self._infer_weak_components(chs_info)
-            suggestions = self._generate_for_campaign(
-                campaign_name=cname,
-                terms=terms,
-                existing_messages=existing_msgs,
-                weak_components=weak_components,
-                variants_per_type=self.config["variants_per_type"]
+            # 1) Identify target campaigns
+            target_campaigns = self._select_target_campaigns(
+                campaign_summary,
+                chs_summary,
+                hypotheses
             )
-            if not suggestions:
-                continue
+            self.logger.info("targets_selected", "Selected target campaigns for creative gen", {"count": len(target_campaigns), "targets": target_campaigns})
 
-            # Simple A/B test plan: control + first two variants
-            test_plan = {
-                "control": 50,
-                "variant_1": 25,
-                "variant_2": 25
+            # Group existing creative messages per campaign
+            creatives_by_campaign: Dict[str, List[str]] = defaultdict(list)
+            for row in creative_summary:
+                creatives_by_campaign[row["campaign_name"]].append(str(row["creative_message"]))
+
+            creatives_out: List[Dict[str, Any]] = []
+
+            for cname in target_campaigns:
+                try:
+                    chs_info = chs_summary.get(cname, {})
+                    terms = text_terms.get(cname, [])
+                    existing_msgs = creatives_by_campaign.get(cname, [])
+
+                    weak_components = self._infer_weak_components(chs_info)
+                    suggestions = self._generate_for_campaign(
+                        campaign_name=cname,
+                        terms=terms,
+                        existing_messages=existing_msgs,
+                        weak_components=weak_components,
+                        variants_per_type=self.config["variants_per_type"]
+                    )
+
+                    # filter suggestions that are too similar to existing creatives
+                    overlap_thresh = float(self.config.get("overlap_threshold", 0.75))
+                    filtered = [s for s in suggestions if s.get("overlap_score", 0.0) <= overlap_thresh]
+                    dropped = len(suggestions) - len(filtered)
+                    if dropped > 0:
+                        self.logger.info("dedupe", "Dropped near-duplicate suggestions", {"campaign": cname, "dropped": dropped})
+
+                    if not filtered:
+                        self.logger.warn("no_suggestions", "No diverse suggestions generated for campaign", {"campaign": cname})
+                        continue
+
+                    # Simple A/B test plan: control + first two variants (if available)
+                    test_plan = {
+                        "control": 50,
+                        "variant_1": 25,
+                        "variant_2": 25
+                    }
+
+                    creatives_out.append({
+                        "campaign_name": cname,
+                        "chs_current": chs_info.get("chs_recent") if chs_info else None,
+                        "weak_components": weak_components,
+                        "suggestions": filtered,
+                        "test_plan": test_plan
+                    })
+                    self.logger.info("campaign_done", "Generated creatives for campaign", {"campaign": cname, "n_suggestions": len(filtered)})
+                except Exception as e:
+                    # per-campaign failure should not stop whole run
+                    self.logger.error("campaign_exception", f"Failed to generate creatives for {cname}", {"campaign": cname, "error": str(e), "trace": traceback.format_exc()})
+                    # continue to next campaign
+
+            result = {
+                "creatives": creatives_out,
+                "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+                "config_used": self.config
             }
-
-            creatives_out.append({
-                "campaign_name": cname,
-                "chs_current": chs_info["chs_recent"] if chs_info else None,
-                "weak_components": weak_components,
-                "suggestions": suggestions,
-                "test_plan": test_plan
-            })
-
-        return {
-            "creatives": creatives_out,
-            "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
-            "config_used": self.config
-        }
+            self.logger.info("success", "creative generation completed", {"n_campaigns": len(creatives_out)})
+            return result
+        except CreativeGeneratorError:
+            self.logger.error("creative_error", "Known creative error raised", {"trace": traceback.format_exc()})
+            raise
+        except Exception as e:
+            self.logger.error("exception", "Unhandled exception in CreativeGenerator", {"trace": traceback.format_exc()})
+            raise wrap_exc("CreativeGenerator failed during run_creative_generation", e, CreativeGeneratorError)
 
     # ---------- Target campaign selection ----------
 
@@ -160,7 +236,6 @@ class CreativeGeneratorAgent:
             ctr_val = ctr_map.get(cname, None)
             spend_val = spend_map.get(cname, 0.0)
             # Lower CHS and lower CTR are worse ⇒ higher priority.
-            # We'll sort by a simple "risk_score".
             chs_penalty = (100 - chs_val) if chs_val is not None else 0
             ctr_penalty = (1 - ctr_val) * 100 if ctr_val is not None else 0
             risk_score = chs_penalty + ctr_penalty + (spend_val or 0) / 10.0
@@ -209,7 +284,7 @@ class CreativeGeneratorAgent:
         variants_per_type applies to each variant_type (benefit, urgency, social_proof).
         """
         # Extract top tokens as "themes"
-        top_terms = [t["term"] for t in terms][:10] if terms else []
+        top_terms = [t["term"] for t in terms][:10] if isinstance(terms, list) and terms else []
         if not top_terms:
             top_terms = ["comfort"]  # safe default in this domain
 
@@ -243,9 +318,12 @@ class CreativeGeneratorAgent:
                     "core_term": core_term,
                     "overlap_score": float(overlap_score)
                 }
+
                 suggestions.append(suggestion)
                 idx += 1
 
+        # Optionally: shuffle suggestions to introduce variation
+        random.shuffle(suggestions)
         return suggestions
 
     # ---------- Variant templates ----------

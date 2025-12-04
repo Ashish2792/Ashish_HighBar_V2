@@ -12,12 +12,21 @@ Pipeline:
  6) CreativeEvaluatorAgent (CHS) -> chs_summary + creative_confidence
  7) CreativeGeneratorAgent -> creatives
  8) Aggregator -> insights.json, creatives.json, report.md, logs
+
+This V2 changes:
+- Generate a single run_id and pass it to all agents so logs correlate.
+- Prefer CreativeGeneratorV2 if available.
+- Default outdir changed to 'reports/' to match submission spec.
+- Run-level log file includes run_id.
 """
 
 import argparse
 import json
 from pathlib import Path
 import datetime
+import importlib
+import sys
+import os
 
 import yaml
 
@@ -101,6 +110,22 @@ def build_agent_configs(cfg: dict) -> dict:
     }
 
 
+def _select_creative_generator_class():
+    """
+    Prefer CreativeGeneratorV2 if available in src.agents; otherwise use CreativeGeneratorAgent.
+    """
+    try:
+        # Try to import CreativeGeneratorV2 from src.agents (it's exported by __init__ if present)
+        mod = importlib.import_module("src.agents")
+        cls = getattr(mod, "CreativeGeneratorV2", None)
+        if cls:
+            return cls
+    except Exception:
+        pass
+    # fallback
+    return CreativeGeneratorAgent
+
+
 def execute_plan(
     query: str,
     cfg: dict,
@@ -114,15 +139,28 @@ def execute_plan(
     outdir_path = Path(outdir)
     outdir_path.mkdir(parents=True, exist_ok=True)
 
-    # Instantiate agents
-    planner = PlannerAgent(config=agent_cfgs["planner"])
-    data_agent = DataAgent(config={"sample_mode": cfg["data"].get("sample_mode", True),
-                                   "sample_frac": cfg["data"].get("sample_frac", 0.5),
-                                   "date_col": cfg["data"].get("date_col", "date")})
-    insight_agent = InsightAgent(config=agent_cfgs["insight"])
-    metric_evaluator = MetricEvaluatorAgent(config=agent_cfgs["metric"])
-    creative_evaluator = CreativeEvaluatorAgent(config=agent_cfgs["creative_eval"])
-    creative_generator = CreativeGeneratorAgent(config=agent_cfgs["creative_gen"])
+    # create a run id to correlate logs across agents
+    run_id = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    # allow logging dir override via env var or config
+    logs_dir = cfg.get("logging", {}).get("outdir", os.environ.get("KASPARRO_LOG_DIR", "logs"))
+    os.environ["KASPARRO_LOG_DIR"] = logs_dir  # let AgentLogger pick this up if it reads env
+    Path(logs_dir).mkdir(parents=True, exist_ok=True)
+
+    # Instantiate agents with run_id to allow per-agent log files to be correlated
+    planner = PlannerAgent(config=agent_cfgs["planner"], run_id=run_id)
+    data_agent = DataAgent(config={
+        "sample_mode": cfg["data"].get("sample_mode", True),
+        "sample_frac": cfg["data"].get("sample_frac", 0.5),
+        "date_col": cfg["data"].get("date_col", "date")
+    }, run_id=run_id)
+    insight_agent = InsightAgent(config=agent_cfgs["insight"], run_id=run_id)
+    metric_evaluator = MetricEvaluatorAgent(config=agent_cfgs["metric"], run_id=run_id)
+    creative_evaluator = CreativeEvaluatorAgent(config=agent_cfgs["creative_eval"], run_id=run_id)
+
+    # pick creative generator implementation
+    CreativeGenCls = _select_creative_generator_class()
+    creative_generator = CreativeGenCls(config=agent_cfgs["creative_gen"], run_id=run_id)
+
     aggregator = Aggregator()
 
     # 1) Planner: generate plan
@@ -217,27 +255,28 @@ def execute_plan(
         outdir=outdir_path,
     )
 
-    # 4) Write simple run log
-    logs_dir = Path(cfg.get("logging", {}).get("outdir", "logs/"))
-    logs_dir.mkdir(parents=True, exist_ok=True)
+    # 4) Write simple run-level JSON log (includes run_id)
     ts = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    log_path = logs_dir / f"run_{ts}.json"
+    run_log_dir = Path(cfg.get("logging", {}).get("outdir", os.environ.get("KASPARRO_LOG_DIR", "logs")))
+    run_log_dir.mkdir(parents=True, exist_ok=True)
+    run_log_path = run_log_dir / f"run_{run_id}.json"
 
     log_payload = {
+        "run_id": run_id,
         "timestamp": ts,
         "query": query,
         "plan": plan,
         "reflection": reflection,
         "outputs": agg_result,
     }
-    with open(log_path, "w") as f:
+    with open(run_log_path, "w") as f:
         json.dump(log_payload, f, indent=2)
 
-    print(f"Run complete.")
+    print(f"Run complete. run_id={run_id}")
     print(f"  Insights:  {agg_result['insights_path']}")
     print(f"  Creatives: {agg_result['creatives_path']}")
     print(f"  Report:    {agg_result['report_path']}")
-    print(f"  Log:       {log_path}")
+    print(f"  Run log:   {run_log_path}")
 
 
 def main():
@@ -260,7 +299,7 @@ def main():
     )
     parser.add_argument(
         "--outdir",
-        default="outputs/",
+        default="reports/",
         help="Directory to write insights.json, creatives.json, and report.md.",
     )
 

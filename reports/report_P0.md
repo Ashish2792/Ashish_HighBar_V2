@@ -1,6 +1,6 @@
 # Kasparro Agentic FB-Analyst Report
 
-_Generated at: 2025-12-04T14:29:33.328311Z_
+_Generated at: 2025-12-02T22:19:56.019322Z_
 
 ## 1) Plan summary
 
@@ -16,6 +16,82 @@ _Generated at: 2025-12-04T14:29:33.328311Z_
 - Campaigns: 219
 
 ## 3) Hypotheses (top validated first)
+
+- **HYP-013** | scope: _campaign_ | campaign: _Men ComfortMax Launch_ | driver: _funnel_ | confidence: **0.50**
+  - Rationale: Campaign 'Men ComfortMax Launch' ROAS changed by -56.3% (prev=12.12, recent=5.30). CTR changed by 0.8% (prev=0.0146, recent=0.0148). Impressions prev=3296656, recent=2599894.
+  - Metrics (prev → recent): ROAS 12.118209863126468 → 5.3016281452243135, CTR 0.014645687406950143 → 0.014763815782430176
+
+- **HYP-041** | scope: _campaign_ | campaign: _Women | Studio Sports_ | driver: _creative_ | confidence: **0.47**
+  - Rationale: Campaign 'Women | Studio Sports' ROAS changed by -63.3% (prev=24.76, recent=9.10). CTR changed by -28.6% (prev=0.0121, recent=0.0086). Impressions prev=4791069, recent=5793979.
+  - Metrics (prev → recent): ROAS 24.75898372452484 → 9.095819341879764, CTR 0.012061010608656074 → 0.008609294610178838
+
+- **HYP-016** | scope: _campaign_ | campaign: _Men Signature Soft_ | driver: _creative_ | confidence: **0.47**
+  - Rationale: Recent CTR=0.0151 below threshold 0.0200 (prev CTR=0.0151). Impressions prev=873732, recent=1107879.
+  - Metrics (prev → recent): ROAS 0.9214993252644623 → 2.5413796906205492, CTR 0.015127711695255671 → 0.015077357397427212
+
+- **HYP-028** | scope: _campaign_ | campaign: _WOMEN SUMMER INVISIBLE_ | driver: _creative_ | confidence: **0.47**
+  - Rationale: Recent CTR=0.0082 below threshold 0.0200 (prev CTR=0.0109). Impressions prev=1075621, recent=2337498.
+  - Metrics (prev → recent): ROAS 4.7845938541732655 → 15.176012868101925, CTR 0.010938255336949573 → 0.008161839575934889
+
+- **HYP-008** | scope: _campaign_ | campaign: _Men  Bold  Colors  Drop_ | driver: _creative_ | confidence: **0.46**
+  - Rationale: Campaign 'Men  Bold  Colors  Drop' ROAS changed by -64.4% (prev=4.06, recent=1.45). CTR changed by -25.1% (prev=0.0113, recent=0.0085). Impressions prev=1289268, recent=644114.
+  - Metrics (prev → recent): ROAS 4.058725921402489 → 1.4468687794845456, CTR 0.011330752289512299 → 0.008489594305540723
+
+- **HYP-049** | scope: _campaign_ | campaign: _men | athleisure cooling_ | driver: _funnel_ | confidence: **0.45**
+  - Rationale: Campaign 'men | athleisure cooling' ROAS changed by -70.9% (prev=24.84, recent=7.22). CTR changed by 2.7% (prev=0.0195, recent=0.0201). Impressions prev=2274123, recent=1948834.
+  - Metrics (prev → recent): ROAS 24.837086465078787 → 7.2245672532708705, CTR 0.01954625733510174 → 0.020067886294489422
+
+- **HYP-009** | scope: _campaign_ | campaign: _Men  ComfortMax  Launch_ | driver: _creative_ | confidence: **0.44**
+  - Rationale: Recent CTR=0.0148 below threshold 0.0200 (prev CTR=0.0127). Impressions prev=1076685, recent=1864417.
+  - Metrics (prev → recent): ROAS 1.5418737504658226 → 12.308806419185496, CTR 0.012747298944282427 → 0.014783953276294361
+
+- **HYP-010** | scope: _campaign_ | campaign: _Men  Premium  Modal_ | driver: _creative_ | confidence: **0.44**
+  - Rationale: Recent CTR=0.0094 below threshold 0.0200 (prev CTR=0.0098). Impressions prev=1267079, recent=1090623.
+  - Metrics (prev → recent): ROAS 4.022371896858151 → 11.692961751275167, CTR 0.009791393279562115 → 0.009436588905173298
+
+- **HYP-023** | scope: _campaign_ | campaign: _WOMEN  Seamless  Everyday_ | driver: _audience_ | confidence: **0.44**
+  - Rationale: Campaign 'WOMEN  Seamless  Everyday' ROAS changed by -56.7% (prev=10.10, recent=4.37). CTR changed by 5.2% (prev=0.0069, recent=0.0073). Impressions prev=474463, recent=1137293.
+  - Metrics (prev → recent): ROAS 10.09543745921398 → 4.3736932591659, CTR 0.006928290934555696 → 0.007290698920255328
+
+- **HYP-048** | scope: _campaign_ | campaign: _men signature soft_ | driver: _audience_ | confidence: **0.44**
+  - Rationale: Campaign 'men signature soft' ROAS changed by -55.8% (prev=4.11, recent=1.82). CTR changed by 12.9% (prev=0.0125, recent=0.0142). Impressions prev=1869519, recent=2072993.
+  - Metrics (prev → recent): ROAS 4.110741454787821 → 1.8152275583893636, CTR 0.01254924108243982 → 0.014162578453619977
+
+- **HYP-039** | scope: _campaign_ | campaign: _Women Seamless Everyday_ | driver: _creative_ | confidence: **0.43**
+  - Rationale: Recent CTR=0.0050 below threshold 0.0200 (prev CTR=0.0066). Impressions prev=436835, recent=2876547.
+  - Metrics (prev → recent): ROAS 5.393205444218197 → 8.260698555297276, CTR 0.006597456705621115 → 0.005047734041349923
+
+- **HYP-021** | scope: _campaign_ | campaign: _Men_Premium_Modal_ | driver: _creative_ | confidence: **0.43**
+  - Rationale: Recent CTR=0.0106 below threshold 0.0200 (prev CTR=0.0078). Impressions prev=2433865, recent=1614913.
+  - Metrics (prev → recent): ROAS 4.314603414712019 → 12.254999676804442, CTR 0.007782628929812567 → 0.01059498214639415
+
+- **HYP-015** | scope: _campaign_ | campaign: _Men Premium Modal_ | driver: _creative_ | confidence: **0.43**
+  - Rationale: Recent CTR=0.0106 below threshold 0.0200 (prev CTR=0.0089). Impressions prev=2404769, recent=5334208.
+  - Metrics (prev → recent): ROAS 2.945970818919073 → 5.257150589076704, CTR 0.008893395977830312 → 0.010582647078095008
+
+- **HYP-029** | scope: _campaign_ | campaign: _WOMEN Seamless Everyday_ | driver: _creative_ | confidence: **0.43**
+  - Rationale: Campaign 'WOMEN Seamless Everyday' ROAS changed by -70.7% (prev=12.93, recent=3.79). CTR changed by -13.9% (prev=0.0084, recent=0.0073). Impressions prev=4033173, recent=3595469.
+  - Metrics (prev → recent): ROAS 12.928790180226532 → 3.7866953564359824, CTR 0.008435934954967108 → 0.007262949645533463
+
+- **HYP-057** | scope: _campaign_ | campaign: _women | studio sports_ | driver: _creative_ | confidence: **0.40**
+  - Rationale: Campaign 'women | studio sports' ROAS changed by -75.9% (prev=11.60, recent=2.79). CTR changed by -45.7% (prev=0.0115, recent=0.0062). Impressions prev=2060234, recent=361046.
+  - Metrics (prev → recent): ROAS 11.598348782908658 → 2.792129486296262, CTR 0.01150206028227923 → 0.006245178813338821
+
+- **HYP-044** | scope: _campaign_ | campaign: _Women_|_Studio_Sports_ | driver: _creative_ | confidence: **0.40**
+  - Rationale: Recent CTR=0.0090 below threshold 0.0200 (prev CTR=0.0100). Impressions prev=901543, recent=1376601.
+  - Metrics (prev → recent): ROAS 5.438541657322526 → 11.351244083824644, CTR 0.009984941705723532 → 0.009032936095909234
+
+- **HYP-004** | scope: _campaign_ | campaign: _MEN PREMIUM MODAL_ | driver: _creative_ | confidence: **0.39**
+  - Rationale: Recent CTR=0.0117 below threshold 0.0200 (prev CTR=0.0099). Impressions prev=1616563, recent=1837359.
+  - Metrics (prev → recent): ROAS 9.025866134293771 → 18.396931114214873, CTR 0.009899479397582556 → 0.011749025212935724
+
+- **HYP-033** | scope: _campaign_ | campaign: _Women  Fit  &  Lift_ | driver: _creative_ | confidence: **0.38**
+  - Rationale: Campaign 'Women  Fit  &  Lift' ROAS changed by -81.7% (prev=16.46, recent=3.01). CTR changed by -14.0% (prev=0.0186, recent=0.0160). Impressions prev=1145732, recent=1496523.
+  - Metrics (prev → recent): ROAS 16.463319427597217 → 3.006447946620843, CTR 0.018649292179578045 → 0.01603837409108971
+
+- **HYP-OVERALL-ROAS** | scope: _overall_ | campaign: _None_ | driver: _overall_ | confidence: **0.38**
+  - Rationale: ROAS changed by -9.3% (prev=6.12, recent=5.55). CTR changed by -4.0% (prev=0.0128, recent=0.0123).
+  - Metrics (prev → recent): ROAS 6.1210326791694865 → 5.551609692162678, CTR 0.01278116066019309 → 0.012274456103523467
 
 - **HYP-058** | scope: _campaign_ | campaign: _women_Summer_Invisible_ | driver: _creative_ | confidence: **0.38**
   - Rationale: Recent CTR=0.0145 below threshold 0.0200 (prev CTR=0.0112). Impressions prev=1488186, recent=1192198.

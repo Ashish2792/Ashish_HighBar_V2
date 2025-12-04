@@ -1,25 +1,57 @@
-"""
-src/agents/insight_agent.py
-Insight Agent implementation.
+class InsightAgent:
+    """
+    InsightAgent
 
-Responsibilities:
-- Take summarized data from DataAgent (data_summary).
-- Detect patterns at overall and campaign level (ROAS/CTR changes).
-- Generate structured hypotheses with rationale and initial_confidence.
-- Tag hypotheses with driver_type (creative / funnel / audience / mixed / overall).
-- Specify required_evidence so Evaluator + Creative Evaluator know what to compute.
-"""
+    Role:
+        Implements T2: `insight_generation`.
+        Reads `data_summary` from DataAgent and converts metric movements
+        into structured hypotheses about ROAS/CTR behaviour.
+
+    Inputs:
+        - data_summary:
+            - global_daily
+            - campaign_daily
+            - campaign_summary
+        - intent: planner’s intent label (e.g. "analyze_roas").
+        - config: thresholds for ROAS drop, low CTR, min impressions.
+
+    Outputs:
+        - {
+            "hypotheses": [ ... ],
+            "generated_at": ISO timestamp,
+            "config_used": resolved thresholds/windows
+          }
+
+        Each hypothesis includes:
+            - id, scope ("overall" or "campaign")
+            - campaign_name (for campaign-scope)
+            - driver_type ("creative", "funnel", "audience", "mixed", "overall")
+            - rationale, metrics_snapshot, initial_confidence
+            - required_evidence: tells evaluator / CHS what to compute.
+
+    Assumptions:
+        - Daily series are at least roughly contiguous in time; split_windows
+          uses the max date as the anchor for “recent vs previous” windows.
+        - We only emit strong hypotheses where ROAS change crosses the configured
+          drop threshold or where CTR is structurally low.
+        - InsightAgent does **not** run statistical tests; it only scores
+          initial_confidence based on magnitude + volume.
+    """
+
 
 from typing import Dict, Any, List, Optional
 import datetime
 from collections import defaultdict
 from statistics import mean
-
 import math
+import traceback
 
+# Logging & error utilities
+from src.utils.logger import AgentLogger
+from src.utils.errors import InsightAgentError, wrap_exc
 
 class InsightAgent:
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None, run_id: Optional[str] = None):
         # default thresholds; will usually be overridden by Planner's params
         self.config = {
             "recent_window_days": 14,
@@ -30,6 +62,8 @@ class InsightAgent:
         }
         if config:
             self.config.update(config)
+        self.run_id = run_id
+        self.logger = AgentLogger("InsightAgent", run_id=self.run_id)
 
     # ---------- Public API ----------
 
@@ -47,41 +81,54 @@ class InsightAgent:
         intent: string from Planner (e.g. 'analyze_roas', 'analyze_ctr')
         params: extra overrides from Planner (thresholds, windows)
         """
-        if params:
-            # merge Planner params into config
-            self.config.update({
-                k: v for k, v in params.items()
-                if k in self.config
-            })
+        self.logger.info("start", "run_insight_generation start", {"intent": intent, "campaign_filter": campaign_filter})
+        try:
+            if params:
+                # merge Planner params into config (only keys that exist)
+                self.config.update({
+                    k: v for k, v in params.items()
+                    if k in self.config
+                })
+                self.logger.debug("config_update", "Updated config from params", {"updated_keys": list(params.keys())})
 
-        meta = data_summary.get("meta", {})
-        global_daily = data_summary.get("global_daily", [])
-        campaign_daily = data_summary.get("campaign_daily", [])
-        campaign_summary = data_summary.get("campaign_summary", [])
+            meta = data_summary.get("meta", {})
+            global_daily = data_summary.get("global_daily", [])
+            campaign_daily = data_summary.get("campaign_daily", [])
+            campaign_summary = data_summary.get("campaign_summary", [])
 
-        # Build index by campaign for daily stats
-        daily_by_campaign = defaultdict(list)
-        for row in campaign_daily:
-            daily_by_campaign[row["campaign_name"]].append(row)
+            # Build index by campaign for daily stats
+            daily_by_campaign = defaultdict(list)
+            for row in campaign_daily:
+                daily_by_campaign[row["campaign_name"]].append(row)
 
-        # 1) Overall hypothesis (account-level ROAS/CTR change)
-        overall_hypotheses = self._build_overall_hypotheses(global_daily, intent)
+            # 1) Overall hypothesis (account-level ROAS/CTR change)
+            overall_hypotheses = self._build_overall_hypotheses(global_daily, intent)
+            self.logger.info("overall_hypotheses", "Built overall hypotheses", {"count": len(overall_hypotheses)})
 
-        # 2) Campaign-level hypotheses (drivers of ROAS change)
-        campaign_hypotheses = self._build_campaign_hypotheses(
-            campaign_summary,
-            daily_by_campaign,
-            intent,
-            campaign_filter
-        )
+            # 2) Campaign-level hypotheses (drivers of ROAS change)
+            campaign_hypotheses = self._build_campaign_hypotheses(
+                campaign_summary,
+                daily_by_campaign,
+                intent,
+                campaign_filter
+            )
+            self.logger.info("campaign_hypotheses", "Built campaign hypotheses", {"count": len(campaign_hypotheses)})
 
-        hypotheses = overall_hypotheses + campaign_hypotheses
+            hypotheses = overall_hypotheses + campaign_hypotheses
 
-        return {
-            "hypotheses": hypotheses,
-            "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
-            "config_used": self.config
-        }
+            self.logger.info("success", "run_insight_generation completed", {"total_hypotheses": len(hypotheses)})
+            return {
+                "hypotheses": hypotheses,
+                "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+                "config_used": self.config
+            }
+        except InsightAgentError:
+            # Already typed; ensure logged and re-raised
+            self.logger.error("insight_error", "InsightAgent validation error", {"trace": traceback.format_exc()})
+            raise
+        except Exception as e:
+            self.logger.error("exception", "Unhandled exception in InsightAgent", {"trace": traceback.format_exc()})
+            raise wrap_exc("InsightAgent failed during run_insight_generation", e, InsightAgentError)
 
     # ---------- Internal helpers ----------
 
@@ -115,6 +162,8 @@ class InsightAgent:
             elif prev_end < d <= recent_cutoff:
                 recent.append(row)
 
+        # log window sizes for debugging
+        self.logger.debug("window_split", "Windows split for a series", {"total_days": len(series), "prev_days": len(prev), "recent_days": len(recent)})
         return prev, recent
 
     def _avg_metric(self, rows: List[Dict[str, Any]], metric: str) -> Optional[float]:
@@ -136,6 +185,7 @@ class InsightAgent:
         intent: str
     ) -> List[Dict[str, Any]]:
         if not global_daily:
+            self.logger.warn("no_global_daily", "No global_daily data provided", {})
             return []
 
         prev, recent = self._split_windows(
@@ -145,6 +195,7 @@ class InsightAgent:
         )
 
         if not prev or not recent:
+            self.logger.warn("insufficient_global_windows", "Not enough global_daily history for windows", {"prev": len(prev), "recent": len(recent)})
             return []
 
         prev_roas = self._avg_metric(prev, "roas")
@@ -213,6 +264,7 @@ class InsightAgent:
 
             daily = sorted(daily_by_campaign.get(cname, []), key=lambda r: r["date"])
             if not daily:
+                self.logger.debug("no_daily", "No daily rows for campaign", {"campaign": cname})
                 continue
 
             prev, recent = self._split_windows(
@@ -221,6 +273,7 @@ class InsightAgent:
                 self.config["previous_window_days"]
             )
             if not prev or not recent:
+                self.logger.debug("insufficient_windows", "Not enough daily history for campaign", {"campaign": cname, "prev_days": len(prev), "recent_days": len(recent)})
                 continue
 
             # aggregate metrics
@@ -237,6 +290,7 @@ class InsightAgent:
 
             # Skip low-volume campaigns
             if prev_impr < min_impr and recent_impr < min_impr:
+                self.logger.debug("skip_low_volume", "Skipping campaign due to low volume", {"campaign": cname, "prev_impr": prev_impr, "recent_impr": recent_impr})
                 continue
 
             # Determine patterns
@@ -321,30 +375,30 @@ class InsightAgent:
 
                     hypotheses.append({
                         "id": hyp_id,
-                            "scope": "campaign",
-                            "campaign_name": cname,
-                            "driver_type": "creative",
-                            "hypothesis": hypo_text,
-                            "rationale": rationale,
-                            "metrics_snapshot": {
-                                "prev": {
-                                    "roas": prev_roas,
-                                    "ctr": prev_ctr,
-                                    "impressions": prev_impr
-                                },
-                                "recent": {
-                                    "roas": recent_roas,
-                                    "ctr": recent_ctr,
-                                    "impressions": recent_impr
-                                },
-                                "pct_change": {
-                                    "roas": roas_change,
-                                    "ctr": ctr_change
-                                }
+                        "scope": "campaign",
+                        "campaign_name": cname,
+                        "driver_type": "creative",
+                        "hypothesis": hypo_text,
+                        "rationale": rationale,
+                        "metrics_snapshot": {
+                            "prev": {
+                                "roas": prev_roas,
+                                "ctr": prev_ctr,
+                                "impressions": prev_impr
                             },
-                            "required_evidence": ["metric_significance", "chs_trend"],
-                            "initial_confidence": float(initial_confidence)
-                        })
+                            "recent": {
+                                "roas": recent_roas,
+                                "ctr": recent_ctr,
+                                "impressions": recent_impr
+                            },
+                            "pct_change": {
+                                "roas": roas_change,
+                                "ctr": ctr_change
+                            }
+                        },
+                        "required_evidence": ["metric_significance", "chs_trend"],
+                        "initial_confidence": float(initial_confidence)
+                    })
 
         return hypotheses
 
